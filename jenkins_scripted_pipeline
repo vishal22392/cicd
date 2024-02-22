@@ -16,5 +16,12 @@ node{
         sh 'docker image push vishal22392/$JOB_NAME:latest'
         sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:latest'
 }
-    }   
+    }
+    stage("Deploy container"){
+        def dockerrun='docker run -p 8000:80 -d --name vishcont vishal22392/pipelinedemo:latest'
+        
+        sshagent (credentials: ['deploy-dev']) {
+    sh 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.21.150 ${dockerrun}'
+  }
+    }
 }
