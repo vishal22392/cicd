@@ -21,7 +21,7 @@ node{
         def dockerrun='docker run -p 8000:80 -d --name vishcont vishal22392/pipelinedemo:latest'
         
         sshagent(['dockerhostpass']) {
-    sh 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.21.150 ${dockerrun}'
+    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.21.150 ${dockerrun}'
   }
     }
 }
