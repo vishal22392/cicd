@@ -1,0 +1,20 @@
+node{
+    stage("Pull source code from github"){
+        git branch: 'main', url: 'https://github.com/vishal22392/cicd'
+    }
+    
+    stage("Build Docker file"){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:latest'
+    }    
+    stage("Push docker image"){
+        withCredentials([string(credentialsId: 'dockerpass', variable: 'dockerpass')]){
+    // some block
+        sh 'docker login -u vishal22392 -p ${dockerpass}'
+        sh 'docker image push vishal22392/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image push vishal22392/$JOB_NAME:latest'
+        sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:v1.$BUILD_ID vishal22392/$JOB_NAME:latest'
+}
+    }   
+}
